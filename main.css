@@ -1,0 +1,46 @@
+.title {
+	font-size: 30px;
+}
+
+table{
+    align-content: center;
+    margin: auto;
+    border-collapse: collapse;
+}
+
+.square{
+    width:100px;
+    height:100px;
+    text-align: center;
+    font-size: 75px;
+}
+
+.v{
+    border-left:1px solid #000;
+    border-right:1px solid #000;
+}
+
+.h{
+    border-top:1px solid #000;
+    border-bottom:1px solid #000;
+}
+
+p{
+    font-size: 30px;
+    font: bold;
+    text-align: center;
+}
+
+button {
+    margin: auto;
+    background-color: black;
+    border: none;
+    color: white;
+    align-content: center;
+    width: 120px;
+    height: 40px;
+}
+
+#content:focus {
+    outline: 0;
+}

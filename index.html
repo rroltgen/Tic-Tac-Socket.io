@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <link href="main.css" rel="stylesheet" />
+  <title>Tic Tac Toe</title>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
+  <script src="http://localhost:5000/socket.io/socket.io.js"></script>
+</head>
+<body>
+<h1 style="text-align: center; font-size: 36px">Tic Tac Toe</h1>
+<button class="newgame">New Game</button>
+<p id="markState"></p>
+<table>
+  <tr>
+    <td class="square" id="1"> </td>
+    <td class="square v" id="2"> </td>
+    <td class="square" id="3"> </td>
+  </tr>
+  <tr>
+    <td class="square h" id="4"> </td>
+    <td class="square v h" id="5"> </td>
+    <td class="square h" id="6"> </td>
+  </tr>
+  <tr>
+    <td class="square" id="7"> </td>
+    <td class="square v" id="8"> </td>
+    <td class="square" id="9"> </td>
+  </tr>
+</table>
+<p id="gameState"></p>
+  <script>
+    $(document).ready(function(){
+      var socket = io.connect('http://localhost:5000');
+      var gameID;
+      var mark;
+      var gameOver = false;
+      var whoseTurn;
+      $("#gameState")[0].innerHTML = "It is X's turn";
+
+     
+
+      $(".square").click(function(){
+        var id = $(this)[0].id;
+        if(mark == whoseTurn && gameOver == false){
+          socket.emit("turn played", { gameID: gameID, id: id });
+        }
+      });
+
+      $(".newgame").click(function(){
+        if(gameOver == true){
+          socket.emit("new game", gameID);
+        }
+      });
+
+      socket.on("connect", function() {
+        socket.emit("joinChannel", "heyo");
+      });
+
+      socket.on("getgame", function(data) {
+        gameID = data.gameID;
+        whoseTurn = data.whoseTurn;
+        mark = data.mark;
+        $("#markState")[0].innerHTML = "Game: " + gameID + "  You are " + mark + "'s";
+      });
+
+      socket.on("game over", function(data) {
+        console.log("game over");
+        gameOver = true;
+        var winner = data.winner;
+        $("#gameState")[0].innerHTML = "Game is over and " + winner + " WINS!";
+      });
+
+      socket.on("update", function(data){
+        $(".square")[0].innerHTML = data.board[0];
+        $(".square")[1].innerHTML = data.board[1];
+        $(".square")[2].innerHTML = data.board[2];
+        $(".square")[3].innerHTML = data.board[3];
+        $(".square")[4].innerHTML = data.board[4];
+        $(".square")[5].innerHTML = data.board[5];
+        $(".square")[6].innerHTML = data.board[6];
+        $(".square")[7].innerHTML = data.board[7];
+        $(".square")[8].innerHTML = data.board[8];
+        whoseTurn = data.whoseTurn;
+        gameOver = data.gameOver;
+        if(whoseTurn == "O" && gameOver == false){
+          $("#gameState")[0].innerHTML = "It is O's turn";
+        }else{
+          $("#gameState")[0].innerHTML = "It is X's turn";
+        }
+      });
+    });
+  </script>
+</body>
+</html>
